@@ -6,6 +6,29 @@ import isWeb, { isWebVoidElement } from '../utils/isWeb'
 
 export const URANIUM_CLASSNAME = 'ur'
 
+// Import stylesheet fropm react-native if it exists
+let StyleSheet;
+try {
+  const reactNative = require('react-native');
+  if (reactNative && reactNative.StyleSheet) {
+    StyleSheet = reactNative.StyleSheet;
+  }
+} catch (e) {
+  StyleSheet = false;
+}
+
+function maybeFlatten(stylesheetOrObject) {
+  if (!stylesheetOrObject) {
+    return {}
+  }
+
+  if (StyleSheet && (stylesheetOrObject instanceof StyleSheet)) {
+    return StyleSheet.flatten(stylesheetOrObject)
+  }
+
+  return stylesheetOrObject
+}
+
 // This plugin assumes its the first plugin run, and makes the
 // style tag the rest of the plugins will use
 export default element => {
@@ -26,7 +49,7 @@ export default element => {
       {}
     )
     // Override css props with style prop
-    newStyle = { ...newStyle, ...(style || {}) }
+    newStyle = { ...newStyle, ...maybeFlatten(style) }
     return React.cloneElement(element, { ...props, style: newStyle })
   }
 
