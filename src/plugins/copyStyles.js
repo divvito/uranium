@@ -1,4 +1,5 @@
 import React from 'react'
+import isNumber from 'lodash/isNumber'
 
 import makeClassName from '../utils/makeClassName'
 import { expandStyle, createCSSDeclarations } from '../utils/expandCSS'
@@ -6,10 +7,11 @@ import isWeb, { isWebVoidElement } from '../utils/isWeb'
 
 export const URANIUM_CLASSNAME = 'ur'
 
-// Import stylesheet fropm react-native if it exists
+// Import stylesheet from react-native if it exists
 let StyleSheet;
 try {
   const reactNative = require('react-native');
+
   if (reactNative && reactNative.StyleSheet) {
     StyleSheet = reactNative.StyleSheet;
   }
@@ -22,7 +24,7 @@ function maybeFlatten(stylesheetOrObject) {
     return {}
   }
 
-  if (StyleSheet && (stylesheetOrObject instanceof StyleSheet)) {
+  if (StyleSheet && isNumber(stylesheetOrObject)) {
     return StyleSheet.flatten(stylesheetOrObject)
   }
 
